@@ -2,8 +2,8 @@ import asyncio
 import time
 
 import pytest
-import aioodbc
-from aioodbc import Pool, Connection
+import asyncodbc
+from asyncodbc import Pool, Connection
 from pyodbc import Error
 
 
@@ -224,7 +224,7 @@ async def test_parallel_tasks_more(loop, pool_maker, dsn):
 
 @pytest.mark.asyncio
 async def test_default_loop(loop, dsn):
-    pool = await aioodbc.create_pool(dsn=dsn)
+    pool = await asyncodbc.create_pool(dsn=dsn)
     assert pool._loop is loop
     pool.close()
     await pool.wait_closed()
@@ -302,10 +302,10 @@ async def test_concurrency(loop, pool_maker, dsn):
 @pytest.mark.asyncio
 async def test_invalid_minsize_and_maxsize(loop, dsn):
     with pytest.raises(ValueError):
-        await aioodbc.create_pool(dsn=dsn, loop=loop, minsize=-1)
+        await asyncodbc.create_pool(dsn=dsn, loop=loop, minsize=-1)
 
     with pytest.raises(ValueError):
-        await aioodbc.create_pool(dsn=dsn, loop=loop, minsize=5,
+        await asyncodbc.create_pool(dsn=dsn, loop=loop, minsize=5,
                                   maxsize=2)
 
 
@@ -468,7 +468,7 @@ async def test_pool_context_manager2(loop, pool):
 @pytest.mark.asyncio
 async def test_all_context_managers(dsn, loop, executor):
     kw = {'dsn': dsn, 'loop': loop, 'executor': executor}
-    async with aioodbc.create_pool(**kw) as pool:
+    async with asyncodbc.create_pool(**kw) as pool:
         async with pool.acquire() as conn:
             async with conn.cursor() as cur:
                 assert not pool.closed

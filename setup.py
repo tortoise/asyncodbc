@@ -9,7 +9,7 @@ install_requires = ['pyodbc']
 PY_VER = sys.version_info
 
 if not PY_VER >= (3, 5):
-    raise RuntimeError("aioodbc doesn't support Python earlier than 3.5")
+    raise RuntimeError("asyncodbc doesn't support Python earlier than 3.5")
 
 
 def read(f):
@@ -22,14 +22,14 @@ extras_require = {}
 def read_version():
     regexp = re.compile(r"^__version__\W*=\W*'([\d.abrc]+)'")
     init_py = os.path.join(os.path.dirname(__file__),
-                           'aioodbc', '__init__.py')
+                           'asyncodbc', '__init__.py')
     with open(init_py) as f:
         for line in f:
             match = regexp.match(line)
             if match is not None:
                 return match.group(1)
         else:
-            raise RuntimeError('Cannot find version in aioodbc/__init__.py')
+            raise RuntimeError('Cannot find version in asyncodbc/__init__.py')
 
 
 classifiers = [
@@ -47,7 +47,7 @@ classifiers = [
 ]
 
 
-setup(name='aioodbc',
+setup(name='asyncodbc',
       version=read_version(),
       description=('ODBC driver for asyncio.'),
       long_description='\n\n'.join((read('README.rst'), read('CHANGES.txt'))),
@@ -55,8 +55,8 @@ setup(name='aioodbc',
       platforms=['POSIX'],
       author="Nikolay Novik",
       author_email="nickolainovik@gmail.com",
-      url='https://github.com/aio-libs/aioodbc',
-      download_url='https://pypi.python.org/pypi/aioodbc',
+      url='https://github.com/tortoise/asyncodbc',
+      download_url='https://pypi.python.org/pypi/asyncodbc',
       license='Apache 2',
       packages=find_packages(),
       python_requires='>=3.5',

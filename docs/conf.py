@@ -36,14 +36,14 @@ def get_release():
     regexp = re.compile(r"^__version__\W*=\W*'([\d.abrc]+)'")
     here = os.path.dirname(__file__)
     root = os.path.dirname(here)
-    init_py = os.path.join(root, 'aioodbc', '__init__.py')
+    init_py = os.path.join(root, 'asyncodbc', '__init__.py')
     with open(init_py) as f:
         for line in f:
             match = regexp.match(line)
             if match is not None:
                 return match.group(1)
         else:
-            raise RuntimeError('Cannot find version in aioodbc/__init__.py')
+            raise RuntimeError('Cannot find version in asyncodbc/__init__.py')
 
 
 def get_version(release):
@@ -71,7 +71,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'aioodbc'
+project = 'asyncodbc'
 copyright = '2015,2016 Nikolay Novik'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -231,7 +231,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'aioodbc.tex', 'aioodbc Documentation',
+  ('index', 'asyncodbc.tex', 'asyncodbc Documentation',
    'Nikolay Novik', 'manual'),
 ]
 
@@ -261,7 +261,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'aioodbc', 'aioodbc Documentation',
+    ('index', 'asyncodbc', 'asyncodbc Documentation',
      ['Nikolay Novik'], 1)
 ]
 
@@ -275,8 +275,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'aioodbc', 'aioodbc Documentation',
-   'Nikolay Novik', 'aioodbc', 'One line description of project.',
+  ('index', 'asyncodbc', 'asyncodbc Documentation',
+   'Nikolay Novik', 'asyncodbc', 'One line description of project.',
    'Miscellaneous'),
 ]
 

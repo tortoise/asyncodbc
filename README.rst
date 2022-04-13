@@ -1,44 +1,33 @@
-aioodbc
-=======
-.. image:: https://travis-ci.com/aio-libs/aioodbc.svg?branch=master
-    :target: https://travis-ci.com/aio-libs/aioodbc
-.. image:: https://coveralls.io/repos/aio-libs/aioodbc/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/aio-libs/aioodbc?branch=master
-.. image:: https://img.shields.io/pypi/v/aioodbc.svg
-    :target: https://pypi.python.org/pypi/aioodbc
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-    :target: https://gitter.im/aio-libs/Lobby
-    :alt: Chat on Gitter
+asyncodbc
+=========
+.. image:: https://travis-ci.com/tortoise/asyncodbc.svg?branch=master
+    :target: https://travis-ci.com/tortoise/asyncodbc
+.. image:: https://coveralls.io/repos/tortoise/asyncodbc/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/tortoise/asyncodbc?branch=master
+.. image:: https://img.shields.io/pypi/v/asyncodbc.svg
+    :target: https://pypi.python.org/pypi/asyncodbc
 
-**aioodbc** is a Python 3.5+ module that makes it possible to access ODBC_ databases
+**asyncodbc** is a Python 3.5+ module that makes it possible to access ODBC_ databases
 with asyncio_. It relies on the awesome pyodbc_ library and preserves the same look and
-feel. *aioodbc* was written using `async/await` syntax (PEP492_) and thus is not compatible
-with Python versions older than 3.5.  Internally *aioodbc* employs threads to avoid
+feel. *asyncodbc* was written using `async/await` syntax (PEP492_) and thus is not compatible
+with Python versions older than 3.5.  Internally *asyncodbc* employs threads to avoid
 blocking the event loop, threads_ are not that as bad as you think!. Other
 drivers like motor_ use the same approach.
 
-**aioodbc** is fully compatible and tested with uvloop_. Take a look at the test
+**asyncodbc** is fully compatible and tested with uvloop_. Take a look at the test
 suite, all tests are executed with both the default event loop and uvloop_.
 
 Supported Databases
 -------------------
 
-**aioodbc** should work with all databases supported by pyodbc_. But for now the
+**asyncodbc** should work with all databases supported by pyodbc_. But for now the
 library has been tested with: **SQLite**, **MySQL** and **PostgreSQL**. Feel
 free to add other databases to the test suite by submitting a PR.
-
-
-Community
----------
-Mailing List: https://groups.google.com/forum/#!forum/aio-libs
-
-Chat room: https://gitter.im/aio-libs/Lobby
-
 
 Basic Example
 -------------
 
-**aioodbc** is based on pyodbc_ and provides the same api, you just need
+**asyncodbc** is based on pyodbc_ and provides the same api, you just need
 to use  ``yield from conn.f()`` or ``await conn.f()`` instead of ``conn.f()``
 
 Properties are unchanged, so ``conn.prop`` is correct as well as
@@ -48,7 +37,7 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
 .. code:: python
 
     import asyncio
-    import aioodbc
+    import asyncodbc
 
 
     loop = asyncio.get_event_loop()
@@ -56,7 +45,7 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
 
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
-        conn = await aioodbc.connect(dsn=dsn, loop=loop)
+        conn = await asyncodbc.connect(dsn=dsn, loop=loop)
 
         cur = await conn.cursor()
         await cur.execute("SELECT 42 AS age;")
@@ -77,7 +66,7 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
 .. code:: python
 
     import asyncio
-    import aioodbc
+    import asyncodbc
 
 
     loop = asyncio.get_event_loop()
@@ -85,7 +74,7 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
 
     async def test_pool():
         dsn = 'Driver=SQLite;Database=sqlite.db'
-        pool = await aioodbc.create_pool(dsn=dsn, loop=loop)
+        pool = await asyncodbc.create_pool(dsn=dsn, loop=loop)
 
         async with pool.acquire() as conn:
             cur = await conn.cursor()
@@ -108,7 +97,7 @@ protocol:
 .. code:: python
 
     import asyncio
-    import aioodbc
+    import asyncodbc
 
 
     loop = asyncio.get_event_loop()
@@ -117,7 +106,7 @@ protocol:
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
 
-        async with aioodbc.create_pool(dsn=dsn, loop=loop) as pool:
+        async with asyncodbc.create_pool(dsn=dsn, loop=loop) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
                     await cur.execute('SELECT 42 AS age;')
@@ -131,7 +120,7 @@ protocol:
 Installation
 ------------
 
-In a linux environment pyodbc_ (hence *aioodbc*) requires the unixODBC_ library.
+In a linux environment pyodbc_ (hence *asyncodbc*) requires the unixODBC_ library.
 You can install it using your package manager, for example::
 
       $ sudo apt-get install unixodbc
@@ -139,7 +128,7 @@ You can install it using your package manager, for example::
 
 then::
 
-   pip install aioodbc
+   pip install asyncodbc
 
 
 Run tests
@@ -184,8 +173,8 @@ Requirements
 .. _pyodbc: https://github.com/mkleehammer/pyodbc
 .. _uvloop: https://github.com/MagicStack/uvloop
 .. _ODBC: https://en.wikipedia.org/wiki/Open_Database_Connectivity
-.. _aiopg: https://github.com/aio-libs/aiopg
-.. _aiomysql: https://github.com/aio-libs/aiomysql
+.. _aiopg: https://github.com/tortoise/aiopg
+.. _aiomysql: https://github.com/tortoise/aiomysql
 .. _PEP492: https://www.python.org/dev/peps/pep-0492/
 .. _unixODBC: http://www.unixodbc.org/
 .. _threads: http://techspot.zzzeek.org/2015/02/15/asynchronous-python-and-databases/

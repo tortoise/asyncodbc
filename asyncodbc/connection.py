@@ -53,7 +53,7 @@ async def _connect(*, dsn, autocommit=False, ansi=False, timeout=0, loop=None,
 class Connection:
     """ Connection objects manage connections to the database.
 
-    Connections should only be created by the aioodbc.connect function.
+    Connections should only be created by the asyncodbc.connect function.
     """
     _source_traceback = None
 

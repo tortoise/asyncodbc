@@ -1,12 +1,12 @@
 Contributing
 ============
 
-Thanks for your interest in contributing to ``aioodbc``, there are multiple
+Thanks for your interest in contributing to ``asyncodbc``, there are multiple
 ways and places you can contribute.
 
 Reporting an Issue
 ------------------
-If you have found issue with `aioodbc` please do
+If you have found issue with `asyncodbc` please do
 not hesitate to file an issue on the GitHub_ project. When filing your
 issue please make sure you can express the issue with a reproducible test
 case.
@@ -16,7 +16,7 @@ that you can include. We never know what information will be pertinent when
 trying narrow down the issue. Please include at least the following
 information:
 
-* Version of `aioodbc` and `python`.
+* Version of `asyncodbc` and `python`.
 * Version of your ODBC database
 * Version of database ODBC driver
 * Version of unixODBC_
@@ -40,11 +40,11 @@ Work flow is pretty straightforward:
 
   3. Make sure all tests passed
 
-  4. Commit changes to own aioodbc clone
+  4. Commit changes to own asyncodbc clone
 
   5. Make pull request from github page for your clone
 
-Preconditions for running aioodbc test suite
+Preconditions for running asyncodbc test suite
 ---------------------------------------------
 
 We expect you to use a python virtual environment and docker_ to run
@@ -54,18 +54,18 @@ There are several ways to make a virtual environment.
 
 If you like to use *virtualenv* please run::
 
-   $ cd aioodbc
+   $ cd asyncodbc
    $ virtualenv --python=`which python3.5` venv
 
 For standard python *venv*::
 
-   $ cd aioodbc
+   $ cd asyncodbc
    $ python3.5 -m venv venv
 
 For *virtualenvwrapper*::
 
-   $ cd aioodbc
-   $ mkvirtualenv --python=`which python3.5` aioodbc
+   $ cd asyncodbc
+   $ mkvirtualenv --python=`which python3.5` asyncodbc
 
 There are other tools like *pyvenv* but you know the rule of thumb
 now: create a python3.5 virtual environment and activate it.
@@ -87,7 +87,7 @@ You do not need to install any databases, docker_ will pull images and create
 containers for you automatically, after the tests, containers will be removed.
 
 
-Run aioodbc test suite
+Run asyncodbc test suite
 ----------------------
 
 After all the preconditions are met you can run tests typing the next
@@ -121,7 +121,7 @@ Use::
 to run test suite and collect coverage information. Once the command
 has finished check your coverage at the file that appears in the last
 line of the output:
-``open file:///.../aioodbc/htmlcov/index.html``
+``open file:///.../asyncodbc/htmlcov/index.html``
 
 Please go to the link and make sure that your code change is covered.
 
@@ -136,7 +136,7 @@ Please before making a Pull Request about documentation changes run::
    $ make doc
 
 Once it finishes it will output the index html page
-``open file:///.../aioodbc/docs/_build/html/index.html``.
+``open file:///.../asyncodbc/docs/_build/html/index.html``.
 
 Go to the link and make sure your doc changes looks good.
 
@@ -147,5 +147,5 @@ After finishing all steps make a GitHub_ Pull Request, thanks.
 
 
 .. _unixODBC: http://www.unixodbc.org/
-.. _GitHub: https://github.com/aio-libs/aioodbc
+.. _GitHub: https://github.com/aio-libs/asyncodbc
 .. _docker: https://docs.docker.com/engine/installation/

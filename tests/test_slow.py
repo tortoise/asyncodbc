@@ -2,14 +2,14 @@ import gc
 
 from unittest import mock
 
-import aioodbc
+import asyncodbc
 import pytest
 
 
 @pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test___del__(loop, dsn, recwarn, executor):
-    conn = await aioodbc.connect(dsn=dsn, loop=loop, executor=executor)
+    conn = await asyncodbc.connect(dsn=dsn, loop=loop, executor=executor)
     exc_handler = mock.Mock()
     loop.set_exception_handler(exc_handler)
 

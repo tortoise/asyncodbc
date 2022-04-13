@@ -1,5 +1,5 @@
 import asyncio
-import aioodbc
+import asyncodbc
 
 from functools import partial
 
@@ -9,7 +9,7 @@ dsn = 'Driver=SQLite3;Database=sqlite.db'
 
 # Sometimes you may want to reuse same connection parameters multiple times.
 # This can be accomplished in a way below using partial function
-connect = partial(aioodbc.connect, dsn=dsn, echo=True, autocommit=True)
+connect = partial(asyncodbc.connect, dsn=dsn, echo=True, autocommit=True)
 
 
 async def test_init_database(loop=None):
@@ -31,7 +31,7 @@ async def test_error_without_context_managers(loop=None):
     in case of any error which lead to resource leakage. To avoid
     `Unclosed connection` errors in your code always close after yourself.
     """
-    conn = await aioodbc.connect(dsn=dsn, loop=loop)
+    conn = await asyncodbc.connect(dsn=dsn, loop=loop)
     cur = await conn.cursor()
 
     try:
@@ -76,14 +76,14 @@ async def test_commit(loop=None):
     When not using `autocommit` parameter do not forget to explicitly call
     this method for your changes to persist within database.
     """
-    async with aioodbc.connect(dsn=dsn, loop=loop) as conn:
+    async with asyncodbc.connect(dsn=dsn, loop=loop) as conn:
         async with conn.cursor() as cur:
             sql = 'INSERT INTO t1 VALUES(1, "test");'
             await cur.execute(sql)
             # Make sure your changes will be actually saved into database
             await cur.commit()
 
-    async with aioodbc.connect(dsn=dsn, loop=loop) as conn:
+    async with asyncodbc.connect(dsn=dsn, loop=loop) as conn:
         async with conn.cursor() as cur:
             sql_select = 'SELECT * FROM t1;'
             await cur.execute(sql_select)

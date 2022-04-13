@@ -64,7 +64,7 @@ target/
 
 # Project
 tags
-ci/aioodbc
+ci/asyncodbc
 sqlite.db
 
 # virtual envs

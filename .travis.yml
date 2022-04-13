@@ -44,6 +44,6 @@ deploy:
   on:
     tags: true
     distributions: sdist bdist_wheel
-    repo: aio-libs/aioodbc
+    repo: aio-libs/asyncodbc
     all_branches: true
     python: 3.6

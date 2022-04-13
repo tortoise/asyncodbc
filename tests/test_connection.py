@@ -5,7 +5,7 @@ from unittest import mock
 import pytest
 import pyodbc
 
-import aioodbc
+import asyncodbc
 
 
 def test_connect(loop, conn):
@@ -42,7 +42,7 @@ async def test_basic_cursor(conn):
 @pytest.mark.asyncio
 async def test_default_loop(loop, dsn):
     asyncio.set_event_loop(loop)
-    conn = await aioodbc.connect(dsn=dsn)
+    conn = await asyncodbc.connect(dsn=dsn)
     assert conn._loop is loop
     await conn.close()
 
@@ -138,7 +138,7 @@ async def test_rollback(conn):
 @pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_custom_executor(loop, dsn, executor):
-    conn = await aioodbc.connect(dsn=dsn, executor=executor, loop=loop)
+    conn = await asyncodbc.connect(dsn=dsn, executor=executor, loop=loop)
     assert conn._executor is executor
     cur = await conn.execute('SELECT 10;')
     (resp,) = await cur.fetchone()
@@ -149,7 +149,7 @@ async def test_custom_executor(loop, dsn, executor):
 
 @pytest.mark.asyncio
 async def test_dataSources(loop, executor):
-    data = await aioodbc.dataSources(loop, executor)
+    data = await asyncodbc.dataSources(loop, executor)
     assert isinstance(data, dict)
 
 
@@ -166,7 +166,7 @@ async def test_connection_simple_with(loop, conn):
 @pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_connect_context_manager(loop, dsn):
-    async with aioodbc.connect(dsn=dsn, loop=loop, echo=True) as conn:
+    async with asyncodbc.connect(dsn=dsn, loop=loop, echo=True) as conn:
         assert not conn.closed
         assert conn.echo
 
@@ -183,7 +183,7 @@ async def test_connect_context_manager(loop, dsn):
 @pytest.mark.asyncio
 async def test___del__(loop, dsn, recwarn, executor):
     return
-    conn = await aioodbc.connect(dsn=dsn, loop=loop, executor=executor)
+    conn = await asyncodbc.connect(dsn=dsn, loop=loop, executor=executor)
     exc_handler = mock.Mock()
     loop.set_exception_handler(exc_handler)
 

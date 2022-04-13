@@ -7,7 +7,7 @@ checkrst:
 	python setup.py check --restructuredtext
 
 flake: checkrst
-	flake8 aioodbc tests examples setup.py
+	flake8 asyncodbc tests examples setup.py
 
 test: flake
 	py.test -s $(FLAGS) ./tests/
@@ -16,7 +16,7 @@ vtest:
 	py.test -s -v $(FLAGS) ./tests/
 
 cov cover coverage: flake
-	py.test -s -v  --cov-report term --cov-report html --cov aioodbc ./tests
+	py.test -s -v  --cov-report term --cov-report html --cov asyncodbc ./tests
 	@echo "open file://`pwd`/htmlcov/index.html"
 clean:
 	rm -rf `find . -name __pycache__`
@@ -43,12 +43,12 @@ docker_build:
 # NOTE: we start crashing if running tests with -n auto
 
 docker_test:
-	docker run --rm -v /$$(pwd):/aioodbc -v /var/run/docker.sock:/var/run/docker.sock --name aioodbc-test-$$(date +%s) --net=host -e PYTHONASYNCIODEBUG=$(PYTHONASYNCIODEBUG) -it jettify/aioodbc-test:latest py.test -sv tests $(FLAGS)
+	docker run --rm -v /$$(pwd):/asyncodbc -v /var/run/docker.sock:/var/run/docker.sock --name asyncodbc-test-$$(date +%s) --net=host -e PYTHONASYNCIODEBUG=$(PYTHONASYNCIODEBUG) -it jettify/asyncodbc-test:latest py.test -sv tests $(FLAGS)
 
 docker_cov:
-	docker run --rm -v /$$(pwd):/aioodbc -v /var/run/docker.sock:/var/run/docker.sock --name aioodbc-test-$$(date +%s) --net=host -e PYTHONASYNCIODEBUG=$(PYTHONASYNCIODEBUG) -it jettify/aioodbc-test:latest py.test -sv --cov-report term --cov-report html --cov tests --cov aioodbc $(FLAGS)
+	docker run --rm -v /$$(pwd):/asyncodbc -v /var/run/docker.sock:/var/run/docker.sock --name asyncodbc-test-$$(date +%s) --net=host -e PYTHONASYNCIODEBUG=$(PYTHONASYNCIODEBUG) -it jettify/asyncodbc-test:latest py.test -sv --cov-report term --cov-report html --cov tests --cov asyncodbc $(FLAGS)
 
 docker_clean:
-	docker rm -v -f $$(docker ps -a -q -f 'name=aioodbc')
+	docker rm -v -f $$(docker ps -a -q -f 'name=asyncodbc')
 
 .PHONY: all flake test vtest cov clean doc

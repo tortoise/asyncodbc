@@ -6,7 +6,7 @@ import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 
-import aioodbc
+import asyncodbc
 import pyodbc
 import pytest
 import uvloop
@@ -76,7 +76,7 @@ async def _pg_server_helper(host, docker, session_id):
 
     await docker.pull('postgres:{}'.format(pg_tag))
     container = await docker.containers.create_or_replace(
-        name=f'aioodbc-test-server-{pg_tag}-{session_id}',
+        name=f'asyncodbc-test-server-{pg_tag}-{session_id}',
         config={
             'Image': f'postgres:{pg_tag}',
             'AttachStdout': False,
@@ -152,14 +152,14 @@ async def mysql_server(loop, host, docker, session_id):
     mysql_tag = '5.7'
     await docker.pull('mysql:{}'.format(mysql_tag))
     container = await docker.containers.create_or_replace(
-        name=f'aioodbc-test-server-{mysql_tag}-{session_id}',
+        name=f'asyncodbc-test-server-{mysql_tag}-{session_id}',
         config={
             'Image': 'mysql:{}'.format(mysql_tag),
             'AttachStdout': False,
             'AttachStderr': False,
-            'Env': ['MYSQL_USER=aioodbc',
+            'Env': ['MYSQL_USER=asyncodbc',
                     'MYSQL_PASSWORD=mysecretpassword',
-                    'MYSQL_DATABASE=aioodbc',
+                    'MYSQL_DATABASE=asyncodbc',
                     'MYSQL_ROOT_PASSWORD=mysecretpassword'],
             'HostConfig': {
                 'PublishAllPorts': True,
@@ -169,8 +169,8 @@ async def mysql_server(loop, host, docker, session_id):
     await container.start()
     port = (await container.port(3306))[0]['HostPort']
     mysql_params = {
-        'database': 'aioodbc',
-        'user': 'aioodbc',
+        'database': 'asyncodbc',
+        'user': 'asyncodbc',
         'password': 'mysecretpassword',
         'host': host,
         'port': port
@@ -269,7 +269,7 @@ async def connection_maker(loop, dsn):
         else:
             executor = kw['executor']
 
-        conn = await aioodbc.connect(dsn=dsn, loop=loop, **kw)
+        conn = await asyncodbc.connect(dsn=dsn, loop=loop, **kw)
         cleanup.append((conn, executor))
         return conn
 
@@ -283,7 +283,7 @@ async def connection_maker(loop, dsn):
 
 @pytest.fixture
 async def pool(loop, dsn):
-    pool = await aioodbc.create_pool(loop=loop, dsn=dsn)
+    pool = await asyncodbc.create_pool(loop=loop, dsn=dsn)
 
     try:
         yield pool
@@ -297,7 +297,7 @@ async def pool_maker(loop):
     pool_list = []
 
     async def make(loop, **kw):
-        pool = await aioodbc.create_pool(loop=loop, **kw)
+        pool = await asyncodbc.create_pool(loop=loop, **kw)
         pool_list.append(pool)
         return pool
 
