@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "asyncodbc"
+version = "0.1.1"
+description = "Forked from aioodbc and make improvement"
+authors = ["long2ice <long2ice@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.rst"
+homepage = "https://github.com/tortoise/asyncodbc"
+repository = "https://github.com/tortoise/asyncodbc.git"
+documentation = "https://github.com/tortoise/asyncodbc"
+keywords = ["sql", "async", "asyncio", "aio", "mssql", "odbc"]
+packages = [
+    { include = "asyncodbc" }
+]
+include = ["LICENSE", "README.rst"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+# Linter tools
+mypy = "*"
+flake8 = "*"
+flake8-comprehensions = "*"
+pyproject-flake8 = "*"
+darglint = "*"
+pylint = "*"
+pygments = "*"
+bandit = "*"
+black = "*"
+# Test tools
+coveralls = "*"
+pytest = "*"
+pytest-xdist = "*"
+pytest-cov = "*"
+pytest-asyncio = "*"
+# Pypi
+twine = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.flake8]
+ignore = "E501,W503,DAR101,DAR201,DAR402"
+max-line-length = 100
+docstring_style = "sphinx"
+
+[tool.coverage.run]
+branch = true
+source = ["asyncodbc"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.mypy]
+pretty = true
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = false
+warn_unused_configs = true
+warn_unreachable = true
+allow_redefinition = true
+strict_equality = true
+show_error_context = true

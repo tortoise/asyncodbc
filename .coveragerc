@@ -1,4 +1,0 @@
-[run]
-branch = True
-source = asyncodbc, tests
-omit = site-packages, .tox

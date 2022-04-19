@@ -3,7 +3,6 @@ from collections.abc import Coroutine
 
 from pyodbc import Error
 
-
 PY_352 = sys.version_info >= (3, 5, 2)
 
 # Issue #195.  Don't pollute the pool with bad conns
@@ -11,10 +10,9 @@ PY_352 = sys.version_info >= (3, 5, 2)
 # so we need specialize the check
 _CONN_CLOSE_ERRORS = {
     # [Microsoft][ODBC Driver 17 for SQL Server]Communication link failure
-    '08S01': None,
-
+    "08S01": None,
     # [HY000] server closed the connection unexpectedly
-    'HY000': '[HY000] server closed the connection unexpectedly',
+    "HY000": "[HY000] server closed the connection unexpectedly",
 }
 
 
@@ -34,8 +32,7 @@ def _is_conn_close_error(e):
 
 
 class _ContextManager(Coroutine):
-
-    __slots__ = ('_coro', '_obj')
+    __slots__ = ("_coro", "_obj")
 
     def __init__(self, coro):
         self._coro = coro
@@ -70,6 +67,9 @@ class _ContextManager(Coroutine):
     def __next__(self):
         return self.send(None)
 
+    def __iter__(self):
+        return self._coro.__await__()
+
     def __await__(self):
         return self._coro.__await__()
 
@@ -93,24 +93,31 @@ class _PoolContextManager(_ContextManager):
         self._obj = None
 
 
-class _PoolConnectionContextManager(_ContextManager):
-
-    __slots__ = ('_coro', '_conn', '_pool')
+class _PoolAcquireContextManager(_ContextManager):
+    __slots__ = ("_coro", "_conn", "_pool")
 
     def __init__(self, coro, pool):
+        super().__init__(coro)
         self._coro = coro
         self._conn = None
         self._pool = pool
-
-    def __await__(self):
-        self._pool = None
-        return self._coro.__await__()
 
     async def __aenter__(self):
         self._conn = await self._coro
         return self._conn
 
     async def __aexit__(self, exc_type, exc, tb):
-        await self._pool.release(self._conn)
-        self._pool = None
-        self._conn = None
+        try:
+            await self._pool.release(self._conn)
+        finally:
+            self._pool = None
+            self._conn = None
+
+
+class _ConnectionContextManager(_ContextManager):
+    async def __aexit__(self, exc_type, exc, tb):
+        if exc_type is not None:
+            self._obj.close()
+        else:
+            await self._obj.close()
+        self._obj = None

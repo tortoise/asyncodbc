@@ -1,13 +1,11 @@
 import asyncio
+
 import asyncodbc
 
 
-loop = asyncio.get_event_loop()
-
-
-async def test_pool():
-    dsn = 'Driver=SQLite;Database=sqlite.db'
-    pool = await asyncodbc.create_pool(dsn=dsn, loop=loop)
+async def pool():
+    dsn = "Driver=SQLite;Database=sqlite.db"
+    pool = await asyncodbc.create_pool(dsn=dsn)
 
     async with pool.acquire() as conn:
         cur = await conn.cursor()
@@ -19,4 +17,6 @@ async def test_pool():
     pool.close()
     await pool.wait_closed()
 
-loop.run_until_complete(test_pool())
+
+if __name__ == "__main__":
+    asyncio.run(pool())

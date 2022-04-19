@@ -1,19 +1,19 @@
 import asyncio
+
 import asyncodbc
 
 
-loop = asyncio.get_event_loop()
+async def example():
+    dsn = "Driver=SQLite;Database=sqlite.db"
 
-
-async def test_example():
-    dsn = 'Driver=SQLite;Database=sqlite.db'
-
-    async with asyncodbc.create_pool(dsn=dsn, loop=loop) as pool:
+    async with asyncodbc.create_pool(dsn=dsn) as pool:
         async with pool.acquire() as conn:
             async with conn.cursor() as cur:
-                await cur.execute('SELECT 42 AS age;')
+                await cur.execute("SELECT 42 AS age;")
                 val = await cur.fetchone()
                 print(val)
                 print(val.age)
 
-loop.run_until_complete(test_example())
+
+if __name__ == "__main__":
+    asyncio.run(example())

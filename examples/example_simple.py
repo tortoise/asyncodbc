@@ -1,13 +1,13 @@
 import asyncio
+
 import asyncodbc
 
 
-loop = asyncio.get_event_loop()
-
-
-async def test_example():
-    dsn = 'Driver=SQLite;Database=sqlite.db'
-    conn = await asyncodbc.connect(dsn=dsn, loop=loop)
+async def example():
+    dsn = "Driver=SQLite;Database=sqlite.db"
+    conn = await asyncodbc.connect(
+        dsn=dsn,
+    )
 
     cur = await conn.cursor()
     await cur.execute("SELECT 42 AS age;")
@@ -18,4 +18,6 @@ async def test_example():
     await cur.close()
     await conn.close()
 
-loop.run_until_complete(test_example())
+
+if __name__ == "__main__":
+    asyncio.run(example())

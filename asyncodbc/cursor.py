@@ -1,9 +1,9 @@
 import pyodbc
+
 from .log import logger
 from .utils import PY_352, _is_conn_close_error
 
-
-__all__ = ['Cursor']
+__all__ = ["Cursor"]
 
 
 class Cursor:
@@ -24,7 +24,7 @@ class Cursor:
     async def _run_operation(self, func, *args, **kwargs):
         # execute func in thread pool of attached to cursor connection
         if not self._conn:
-            raise pyodbc.OperationalError('Cursor is closed.')
+            raise pyodbc.OperationalError("Cursor is closed.")
 
         try:
             result = await self._conn._execute(func, *args, **kwargs)
@@ -207,11 +207,6 @@ class Cursor:
     def tables(self, **kw):
         """Creates a result set of tables in the database that match the
         given criteria.
-
-        :param table: the table tname
-        :param catalog: the catalog name
-        :param schema: the schmea name
-        :param tableType: one of TABLE, VIEW, SYSTEM TABLE ...
         """
         fut = self._run_operation(self._impl.tables, **kw)
         return fut
@@ -220,11 +215,6 @@ class Cursor:
         """Creates a results set of column names in specified tables by
         executing the ODBC SQLColumns function. Each row fetched has the
         following columns.
-
-        :param table: the table tname
-        :param catalog: the catalog name
-        :param schema: the schmea name
-        :param column: string search pattern for column names.
         """
         fut = self._run_operation(self._impl.columns, **kw)
         return fut
@@ -240,36 +230,48 @@ class Cursor:
         :param quick: if True, CARDINALITY and PAGES are returned  only if
             they are readily available from the server
         """
-        fut = self._run_operation(self._impl.statistics, catalog=catalog,
-                                  schema=schema, unique=unique, quick=quick)
+        fut = self._run_operation(
+            self._impl.statistics,
+            catalog=catalog,
+            schema=schema,
+            unique=unique,
+            quick=quick,
+        )
         return fut
 
-    def rowIdColumns(self, table, catalog=None, schema=None,  # nopep8
-                     nullable=True):
+    def rowIdColumns(self, table, catalog=None, schema=None, nullable=True):  # nopep8
         """Executes SQLSpecialColumns with SQL_BEST_ROWID which creates a
         result set of columns that uniquely identify a row
         """
-        fut = self._run_operation(self._impl.rowIdColumns, table,
-                                  catalog=catalog, schema=schema,
-                                  nullable=nullable)
+        fut = self._run_operation(
+            self._impl.rowIdColumns,
+            table,
+            catalog=catalog,
+            schema=schema,
+            nullable=nullable,
+        )
         return fut
 
-    def rowVerColumns(self, table, catalog=None, schema=None,  # nopep8
-                      nullable=True):
+    def rowVerColumns(self, table, catalog=None, schema=None, nullable=True):  # nopep8
         """Executes SQLSpecialColumns with SQL_ROWVER which creates a
         result set of columns that are automatically updated when any
         value in the row is updated.
         """
-        fut = self._run_operation(self._impl.rowVerColumns, table,
-                                  catalog=catalog, schema=schema,
-                                  nullable=nullable)
+        fut = self._run_operation(
+            self._impl.rowVerColumns,
+            table,
+            catalog=catalog,
+            schema=schema,
+            nullable=nullable,
+        )
         return fut
 
     def primaryKeys(self, table, catalog=None, schema=None):  # nopep8
         """Creates a result set of column names that make up the primary key
         for a table by executing the SQLPrimaryKeys function."""
-        fut = self._run_operation(self._impl.primaryKeys, table,
-                                  catalog=catalog, schema=schema)
+        fut = self._run_operation(
+            self._impl.primaryKeys, table, catalog=catalog, schema=schema
+        )
         return fut
 
     def foreignKeys(self, *a, **kw):  # nopep8
@@ -314,9 +316,12 @@ class Cursor:
         return fut
 
     if PY_352:
+
         def __aiter__(self):
             return self
+
     else:
+
         async def __aiter__(self):
             return self
 

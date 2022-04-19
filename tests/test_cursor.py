@@ -2,14 +2,13 @@ import pyodbc
 import pytest
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_cursor_with(conn, table):
     ret = []
 
     # regular cursor usage
     cur = await conn.cursor()
-    await cur.execute('SELECT * FROM t1;')
+    await cur.execute("SELECT * FROM t1;")
     assert not cur.closed
     assert not cur.echo
 
@@ -19,16 +18,14 @@ async def test_cursor_with(conn, table):
         async for i in cur:
             ret.append(i)
     expected = [tuple(r) for r in ret]
-    assert [(1, '123.45'), (2, 'foo')] == expected
+    assert [(1, "123.45"), (2, "foo")] == expected
     assert cur.closed
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_cursor_lightweight(conn, table):
-
     cur = await conn.cursor()
-    ex_cursor = await cur.execute('SELECT * FROM t1;')
+    ex_cursor = await cur.execute("SELECT * FROM t1;")
     assert ex_cursor is cur
 
     assert not cur.closed
@@ -38,18 +35,15 @@ async def test_cursor_lightweight(conn, table):
     assert cur.closed
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_cursor_await(conn, table):
-
     async with conn.cursor() as cur:
-        await cur.execute('SELECT * FROM t1;')
+        await cur.execute("SELECT * FROM t1;")
         assert not cur.closed
 
     assert cur.closed
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_cursor(conn):
     cur = await conn.cursor()
@@ -66,16 +60,14 @@ async def test_cursor(conn):
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_execute_on_closed_cursor(conn):
     cur = await conn.cursor()
     await cur.close()
     with pytest.raises(pyodbc.OperationalError):
-        await cur.execute('SELECT 1;')
+        await cur.execute("SELECT 1;")
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_close(conn):
     cur = await conn.cursor()
@@ -85,44 +77,35 @@ async def test_close(conn):
     assert cur.closed
 
 
-@pytest.mark.parametrize('db', ['sqlite'])
 @pytest.mark.asyncio
 async def test_description(conn):
     cur = await conn.cursor()
     assert cur.description is None
-    await cur.execute('SELECT 1;')
-    expected = (('1', float, None, 54, 54, 0, True), )
+    await cur.execute("SELECT 1;")
+    expected = (("", int, None, 10, 10, 0, False),)
     assert cur.description == expected
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_description_with_real_table(conn, table):
     cur = await conn.cursor()
     await cur.execute("SELECT * FROM t1;")
 
-    expected = (('n', int, None, 10, 10, 0, True),
-                ('v', str, None, 10, 10, 0, True))
+    expected = (("n", int, None, 10, 10, 0, True), ("v", str, None, 10, 10, 0, True))
     assert cur.description == expected
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_rowcount_with_table(conn, table):
     cur = await conn.cursor()
     await cur.execute("SELECT * FROM t1;")
     await cur.fetchall()
-    # sqlite does not provide working rowcount attribute
-    # http://stackoverflow.com/questions/4911404/in-pythons-sqlite3-
-    # module-why-cant-cursor-rowcount-tell-me-the-number-of-ro
-    # TODO: figure out for proper test
-    assert cur.rowcount in (0, 2)
+    assert cur.rowcount == -1
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_arraysize(conn):
     cur = await conn.cursor()
@@ -132,13 +115,12 @@ async def test_arraysize(conn):
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_fetchall(conn, table):
     cur = await conn.cursor()
     await cur.execute("SELECT * FROM t1;")
     resp = await cur.fetchall()
-    expected = [(1, '123.45'), (2, 'foo')]
+    expected = [(1, "123.45"), (2, "foo")]
 
     for row, exp in zip(resp, expected):
         assert exp == tuple(row)
@@ -146,13 +128,12 @@ async def test_fetchall(conn, table):
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_fetchmany(conn, table):
     cur = await conn.cursor()
     await cur.execute("SELECT * FROM t1;")
     resp = await cur.fetchmany(1)
-    expected = [(1, '123.45')]
+    expected = [(1, "123.45")]
 
     for row, exp in zip(resp, expected):
         assert exp == tuple(row)
@@ -160,38 +141,24 @@ async def test_fetchmany(conn, table):
     await cur.close()
 
 
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_fetchone(conn, table):
     cur = await conn.cursor()
     await cur.execute("SELECT * FROM t1;")
     resp = await cur.fetchone()
-    expected = (1, '123.45')
+    expected = (1, "123.45")
 
     assert expected == tuple(resp)
     await cur.close()
 
 
-@pytest.mark.parametrize('db', ['sqlite'])
-@pytest.mark.asyncio
-async def test_tables(conn, table):
-    cur = await conn.cursor()
-    await cur.tables()
-    resp = await cur.fetchall()
-    expectd = (None, None, 't1', 'TABLE', None)
-    assert len(resp) == 1, resp
-    assert expectd == tuple(resp[0]), resp
-
-
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_cursor_rollback(conn, table):
-
     cur = await conn.cursor()
     await cur.execute("INSERT INTO t1 VALUES (3, '123.45');")
     await cur.execute("SELECT v FROM t1 WHERE n=3;")
-    (value, ) = await cur.fetchone()
-    assert value == '123.45'
+    (value,) = await cur.fetchone()
+    assert value == "123.45"
 
     await cur.rollback()
     await cur.execute("SELECT v FROM t1 WHERE n=3;")
@@ -199,21 +166,6 @@ async def test_cursor_rollback(conn, table):
     assert value is None
 
 
-@pytest.mark.parametrize('db', ['sqlite'])
-@pytest.mark.asyncio
-async def test_columns(conn, table):
-    cur = await conn.cursor()
-    await cur.columns()
-    resp = await cur.fetchall()
-    expectd = [('', '', 't1', 'n', 4, 'INT', 9, 10, 10, 0, 1, None,
-                'NULL', 4, None, 16384, 1, 'YES'),
-               ('', '', 't1', 'v', 12, 'VARCHAR(10)', 10, 10, 10, 0, 1, None,
-                'NULL', 12, None, 16384, 2, 'YES')]
-    columns = [tuple(r) for r in resp]
-    assert expectd == columns
-
-
-@pytest.mark.parametrize('db', pytest.db_list)
 @pytest.mark.asyncio
 async def test_executemany(conn):
     cur = await conn.cursor()
@@ -235,38 +187,18 @@ async def test_executemany(conn):
     await cur.execute("DROP TABLE t1;")
 
 
-@pytest.mark.parametrize('db', ['sqlite'])
-@pytest.mark.asyncio
-async def test_procedures_empty(conn, table):
-    cur = await conn.cursor()
-    await cur.procedures()
-    resp = await cur.fetchall()
-    assert resp == []
-
-
-@pytest.mark.parametrize('db', ['sqlite'])
-@pytest.mark.asyncio
-async def test_procedureColumns_empty(conn, table):
-    cur = await conn.cursor()
-    await cur.procedureColumns()
-    resp = await cur.fetchall()
-    assert resp == []
-
-
-@pytest.mark.parametrize('db', ['sqlite'])
 @pytest.mark.asyncio
 async def test_primaryKeys_empty(conn, table):
     cur = await conn.cursor()
-    await cur.primaryKeys('t1', 't1', 't1')
+    await cur.primaryKeys("t1", "t1", "t1")
     resp = await cur.fetchall()
     assert resp == []
 
 
-@pytest.mark.parametrize('db', ['sqlite'])
 @pytest.mark.asyncio
 async def test_foreignKeys_empty(conn, table):
     cur = await conn.cursor()
-    await cur.foreignKeys('t1')
+    await cur.foreignKeys("t1")
     resp = await cur.fetchall()
     assert resp == []
 
@@ -276,7 +208,29 @@ async def test_getTypeInfo_empty(conn, table):
     cur = await conn.cursor()
     await cur.getTypeInfo(pyodbc.SQL_CHAR)
     resp = await cur.fetchall()
-    expected = [('char', 1, 255, "'", "'", 'length', 1, 0, 3, None, 0, 0,
-                 'char', None, None, 1, 0, None, None)]
+    expected = [
+        (
+            "char",
+            1,
+            8000,
+            "'",
+            "'",
+            "length",
+            1,
+            0,
+            3,
+            None,
+            0,
+            None,
+            "char",
+            None,
+            None,
+            1,
+            None,
+            None,
+            None,
+            1,
+        )
+    ]
     type_info = [tuple(r) for r in resp]
     assert type_info == expected

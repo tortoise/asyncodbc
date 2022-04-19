@@ -1,10 +1,9 @@
 import asyncio
-import asyncodbc
-
 from functools import partial
 
+import asyncodbc
 
-dsn = 'Driver=SQLite3;Database=sqlite.db'
+dsn = "Driver=SQLite;Database=sqlite.db"
 
 
 # Sometimes you may want to reuse same connection parameters multiple times.
@@ -12,7 +11,7 @@ dsn = 'Driver=SQLite3;Database=sqlite.db'
 connect = partial(asyncodbc.connect, dsn=dsn, echo=True, autocommit=True)
 
 
-async def test_init_database(loop=None):
+async def init_database():
     """
     Initialize test database with sample schema/data to reuse in other tests.
     Make sure that in real applications you have database initialization
@@ -21,17 +20,17 @@ async def test_init_database(loop=None):
     """
     async with connect(loop=loop) as conn:
         async with conn.cursor() as cur:
-            sql = 'CREATE TABLE IF NOT EXISTS t1(n INTEGER, v TEXT);'
+            sql = "CREATE TABLE IF NOT EXISTS t1(n INTEGER, v TEXT);"
             await cur.execute(sql)
 
 
-async def test_error_without_context_managers(loop=None):
+async def error_without_context_managers():
     """
     When not using context manager you may end up having unclosed connections
     in case of any error which lead to resource leakage. To avoid
     `Unclosed connection` errors in your code always close after yourself.
     """
-    conn = await asyncodbc.connect(dsn=dsn, loop=loop)
+    conn = await asyncodbc.connect(dsn=dsn)
     cur = await conn.cursor()
 
     try:
@@ -45,7 +44,7 @@ async def test_error_without_context_managers(loop=None):
         await conn.close()
 
 
-async def test_insert_with_values(loop=None):
+async def insert_with_values():
     """
     When providing data to your SQL statement make sure to parametrize it with
     question marks placeholders. Do not use string formatting or make sure
@@ -56,22 +55,20 @@ async def test_insert_with_values(loop=None):
     async with connect(loop=loop) as conn:
         async with conn.cursor() as cur:
             # Substitute sql markers with variables
-            await cur.execute('INSERT INTO t1(n, v) VALUES(?, ?);',
-                              ('2', 'test 2'))
+            await cur.execute("INSERT INTO t1(n, v) VALUES(?, ?);", ("2", "test 2"))
             # NOTE: make sure to pass variables as tuple of strings even if
             # your data types are different to prevent
             # pyodbc.ProgrammingError errors. You can even do like this
-            values = (3, 'test 3')
-            await cur.execute('INSERT INTO t1(n, v) VALUES(?, ?);',
-                              *map(str, values))
+            values = (3, "test 3")
+            await cur.execute("INSERT INTO t1(n, v) VALUES(?, ?);", *map(str, values))
 
             # Retrieve id of last inserted row
-            await cur.execute('SELECT last_insert_rowid();')
+            await cur.execute("SELECT last_insert_rowid();")
             result = await cur.fetchone()
             print(result[0])
 
 
-async def test_commit(loop=None):
+async def commit():
     """
     When not using `autocommit` parameter do not forget to explicitly call
     this method for your changes to persist within database.
@@ -85,16 +82,16 @@ async def test_commit(loop=None):
 
     async with asyncodbc.connect(dsn=dsn, loop=loop) as conn:
         async with conn.cursor() as cur:
-            sql_select = 'SELECT * FROM t1;'
+            sql_select = "SELECT * FROM t1;"
             await cur.execute(sql_select)
             # At this point without autocommiting you will not see
             # the data inserted above
             print(await cur.fetchone())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(test_init_database(loop))
-    loop.run_until_complete(test_commit(loop))
-    loop.run_until_complete(test_insert_with_values(loop))
-    loop.run_until_complete(test_error_without_context_managers(loop))
+    loop.run_until_complete(init_database())
+    loop.run_until_complete(commit())
+    loop.run_until_complete(insert_with_values())
+    loop.run_until_complete(error_without_context_managers())
