@@ -23,8 +23,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
-      MSSQL_PASS: Abcd12345678
-      MSSQL_DRIVER: ODBC Driver 18 for SQL Server
+      TEST_MSSQL_PASS: Abcd12345678
     strategy:
       matrix:
         python-version: [ "3.8", "3.9", "3.10" ]
