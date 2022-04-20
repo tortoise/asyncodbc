@@ -352,7 +352,7 @@ async def test_wait_closed(pool_maker, dsn):
         do_release(c1),
         do_release(c2),
     )
-    assert ["release", "release", "wait_closed"] == ops
+    assert sorted(["release", "release", "wait_closed"]) == sorted(ops)
     assert 0 == pool.freesize
 
 
@@ -466,28 +466,29 @@ async def test_context_manager_aexit(connection_maker):
         # commit on exit if no error
         params = (1, "123.45")
         async with conn.cursor() as cur:
-            await cur.execute("CREATE TABLE cmt1(n int, v VARCHAR(10))")
-            await cur.execute("INSERT INTO cmt1 VALUES (?,?);", params)
+            await cur.execute("CREATE TABLE cmt(n int, v VARCHAR(10))")
+            await cur.execute("INSERT INTO cmt VALUES (?,?)", params)
         async with conn.cursor() as cur:
-            await cur.execute("SELECT v FROM cmt1 WHERE n=1;")
+            await cur.execute("SELECT v FROM cmt WHERE n=1;")
             (value,) = await cur.fetchone()
             assert value == params[1]
 
         # rollback on exit if error
         with pytest.raises(Error):
             async with conn.cursor() as cur:
-                await cur.execute("ins INTO cmt1 VALUES (2, '666');")
+                await cur.execute("ins INTO cmt VALUES (2, '666');")
         async with conn.cursor() as cur:
-            await cur.execute("SELECT v FROM cmt1 WHERE n=2;")
+            await cur.execute("SELECT v FROM cmt WHERE n=2")
             row = await cur.fetchone()
             assert row is None
 
         async with conn.cursor() as cur:
-            await cur.execute("DROP TABLE cmt1;")
+            await cur.execute("DROP TABLE cmt")
 
     conn = await connection_maker(autocommit=False)
     assert not conn.autocommit
     await aexit_conntex_managet(conn)
+    await conn.commit()
 
     conn = await connection_maker(autocommit=True)
     assert conn.autocommit

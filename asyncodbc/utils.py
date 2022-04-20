@@ -78,10 +78,6 @@ class _ContextManager(Coroutine):
         return self._obj
 
     async def __aexit__(self, exc_type, exc, tb):
-        if exc_type:
-            await self._obj.rollback()
-        elif not self._obj.autocommit:
-            await self._obj.commit()
         await self._obj.close()
         self._obj = None
 
@@ -116,8 +112,5 @@ class _PoolAcquireContextManager(_ContextManager):
 
 class _ConnectionContextManager(_ContextManager):
     async def __aexit__(self, exc_type, exc, tb):
-        if exc_type is not None:
-            self._obj.close()
-        else:
-            await self._obj.close()
+        await self._obj.close()
         self._obj = None

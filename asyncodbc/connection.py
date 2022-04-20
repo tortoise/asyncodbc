@@ -122,7 +122,7 @@ class Connection:
     def _execute(self, func, *args, **kwargs):
         # execute function with args and kwargs in thread pool
         func = partial(func, *args, **kwargs)
-        future = asyncio.get_running_loop().run_in_executor(self._executor, func)
+        future = asyncio.get_event_loop().run_in_executor(self._executor, func)
         return future
 
     async def _connect(self):

@@ -25,16 +25,15 @@ def event_loop():
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def database():
     connection = await asyncodbc.connect(dsn=os.getenv("TEST_DSN"), autocommit=True)
-    cur = await connection.cursor()
     db = f"test_{uuid.uuid4()}".replace("-", "")
-    await cur.execute(f"CREATE DATABASE {db};")
+    await connection.execute(f"CREATE DATABASE {db};")
     yield db
-    await cur.execute(f"DROP DATABASE {db};")
+    await connection.execute(f"DROP DATABASE {db};")
     await connection.close()
 
 
 @pytest.fixture
-async def connection_maker(dsn):
+async def connection_maker(dsn, database):
     cleanup = []
 
     async def make(**kw):
@@ -44,7 +43,7 @@ async def connection_maker(dsn):
         else:
             executor = kw["executor"]
 
-        conn = await asyncodbc.connect(dsn=dsn, **kw)
+        conn = await asyncodbc.connect(dsn=dsn, database=database, **kw)
         cleanup.append((conn, executor))
         return conn
 
