@@ -205,7 +205,7 @@ class Pool(asyncio.AbstractServer):
             self._terminated.remove(conn)
             return
         self._used.remove(conn)
-        if conn.connected:
+        if not conn.closed:
             if self._closing:
                 await conn.close()
             else:
