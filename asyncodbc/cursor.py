@@ -269,9 +269,7 @@ class Cursor:
     def primaryKeys(self, table, catalog=None, schema=None):  # nopep8
         """Creates a result set of column names that make up the primary key
         for a table by executing the SQLPrimaryKeys function."""
-        fut = self._run_operation(
-            self._impl.primaryKeys, table, catalog=catalog, schema=schema
-        )
+        fut = self._run_operation(self._impl.primaryKeys, table, catalog=catalog, schema=schema)
         return fut
 
     def foreignKeys(self, *a, **kw):  # nopep8
