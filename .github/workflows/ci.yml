@@ -26,12 +26,13 @@ jobs:
       TEST_MSSQL_PASS: Abcd12345678
     strategy:
       matrix:
-        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13", "3.14" ]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
@@ -44,8 +45,10 @@ jobs:
           sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list -o /etc/apt/sources.list.d/mssql-release.list
           sudo apt-get update
           ACCEPT_EULA=Y sudo apt-get install -y msodbcsql18
-      - name: Run ci
-        run: make ci
+      - name: Check style
+        run: make check
+      - name: Run tests
+        run: make testall
       - name: Upload Coverage
         run: uvx coveralls --service=github
         env:

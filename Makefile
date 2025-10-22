@@ -14,7 +14,7 @@ _style:
 style: deps _style
 
 _codeqc:
-	# mypy $(checkfiles)
+	#mypy $(checkfiles)
 	bandit -c pyproject.toml -r $(checkfiles)
 	twine check dist/*
 codeqc: build _codeqc
