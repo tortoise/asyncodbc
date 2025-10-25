@@ -174,6 +174,7 @@ Requirements
 .. _uvloop: https://github.com/MagicStack/uvloop
 .. _ODBC: https://en.wikipedia.org/wiki/Open_Database_Connectivity
 .. _asyncpg: https://github.com/MagicStack/asyncpg
+.. _aiopg: https://github.com/aio-libs/aiopg
 .. _aiomysql: https://github.com/aio-libs/aiomysql
 .. _PEP492: https://www.python.org/dev/peps/pep-0492/
 .. _unixODBC: http://www.unixodbc.org/
