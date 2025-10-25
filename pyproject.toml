@@ -40,7 +40,7 @@ build-backend = "pdm.backend"
 version = {source="file", path="asyncodbc/__init__.py"}
 
 [tool.pdm.build]
-excludes = ["./**/.git", "./**/.*_cache"]
+excludes = ["./**/.git", "./**/.*_cache", "./**/*.pyc", "./**/*.swp"]
 include = ["LICENSE", "README.rst"]
 
 [tool.pytest.ini_options]
