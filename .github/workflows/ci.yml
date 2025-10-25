@@ -8,17 +8,17 @@ on:
       - master
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       mssql:
-        image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2022-CU15-ubuntu-22.04
         ports:
           - 1433:1433
         env:
           ACCEPT_EULA: Y
           SA_PASSWORD: Abcd12345678
         options: >-
-          --health-cmd "/opt/mssql-tools/bin/sqlcmd -U sa -P Abcd12345678 -Q 'select 1' -b -o /dev/null"
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Abcd12345678 -Q 'SELECT 1' -b -o /dev/null"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -33,18 +33,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
+      - name: Install ODBC driver
+        run: |
+          curl -sSL -O https://packages.microsoft.com/config/ubuntu/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           activate-environment: true
       - name: Install requirements
         run: make deps
-      - name: Install ODBC driver
-        run: |
-          sudo curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list -o /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          ACCEPT_EULA=Y sudo apt-get install -y msodbcsql18
       - name: Check style
         run: make check
       - name: Run tests
@@ -59,8 +59,7 @@ jobs:
   coveralls:
     name: Finish Coveralls
     needs: test
-    runs-on: ubuntu-latest
-    container: python:3-slim
+    runs-on: ubuntu-22.04
     steps:
       - name: Finished
         run: |
