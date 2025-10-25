@@ -6,7 +6,7 @@ up:
 	@uv lock --upgrade
 
 deps:
-	@uv sync --inexact --all-extras --all-groups $(options)
+	@uv sync --inexact --all-extras --all-groups --no-group docs $(options)
 
 _style:
 	@ruff format $(checkfiles)
@@ -41,6 +41,7 @@ testall: deps _testall
 ci: check _testall
 
 docs: deps
+	uv pip install --group docs
 	rm -fR ./build
 	sphinx-build -M html docs build
 

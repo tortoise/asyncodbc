@@ -55,24 +55,29 @@ There are several ways to make a virtual environment.
 If you like to use *virtualenv* please run::
 
    $ cd asyncodbc
-   $ virtualenv --python=`which python3.5` venv
+   $ virtualenv --python=`which python3.13` venv
 
 For standard python *venv*::
 
    $ cd asyncodbc
-   $ python3.5 -m venv venv
+   $ python3.13 -m venv venv
 
 For *virtualenvwrapper*::
 
    $ cd asyncodbc
-   $ mkvirtualenv --python=`which python3.5` asyncodbc
+   $ mkvirtualenv --python=`which python3.13` asyncodbc
+
+For *uv*::
+
+    $ cd asyncodbc
+    $ uv venv --python=3.13 --prompt=asyncodbc-py3.13
 
 There are other tools like *pyvenv* but you know the rule of thumb
-now: create a python3.5 virtual environment and activate it.
+now: create a python3 virtual environment and activate it.
 
 After that please install libraries required for development::
 
-   $ pip install -r requirements-dev.txt
+   $ pip install -r pyproject.toml --group dev --group test -e .
 
 We also recommend to install *ipdb* but it's on your own::
 
@@ -93,16 +98,16 @@ Run asyncodbc test suite
 After all the preconditions are met you can run tests typing the next
 command::
 
-   $ make test
+   $ make ci
 
 Or if you want to run only one particular test::
 
-    $ py.test tests/test_connection.py -k test_basic_cursor
+    $ pytest tests/test_connection.py -k test_basic_cursor
 
 The command at first will run the static and style checkers (sorry, we don't
 accept pull requests with `pep8` or `pyflakes` errors).
 
-On `flake8` success the tests will be run.
+On `ruff` success the tests will be run.
 
 Please take a look on the produced output.
 
@@ -116,7 +121,7 @@ We are trying hard to have good test coverage; please don't make it worse.
 
 Use::
 
-   $ make cov
+   $ make testall
 
 to run test suite and collect coverage information. Once the command
 has finished check your coverage at the file that appears in the last
@@ -133,10 +138,11 @@ We encourage documentation improvements.
 
 Please before making a Pull Request about documentation changes run::
 
-   $ make doc
+   $ pip install --group docs
+   $ make docs
 
 Once it finishes it will output the index html page
-``open file:///.../asyncodbc/docs/_build/html/index.html``.
+``open file:///.../asyncodbc/build/html/index.html``.
 
 Go to the link and make sure your doc changes looks good.
 
@@ -147,5 +153,5 @@ After finishing all steps make a GitHub_ Pull Request, thanks.
 
 
 .. _unixODBC: http://www.unixodbc.org/
-.. _GitHub: https://github.com/aio-libs/asyncodbc
+.. _GitHub: https://github.com/aio-libs/aioodbc
 .. _docker: https://docs.docker.com/engine/installation/

@@ -2,7 +2,7 @@ Examples of asyncodbc usage
 =========================
 
 Below is a list of examples from `asyncodbc/examples
-<https://github.com/aio-libs/asyncodbc/tree/master/examples>`_
+<https://github.com/tortoise/asyncodbc/tree/master/examples>`_
 
 Every example is a correct tiny python program.
 

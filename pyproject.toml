@@ -28,6 +28,9 @@ test = [
     "pytest-xdist >=3.8.0",
     "pytest-asyncio >=1.2.0",
 ]
+docs = [
+    "sphinx>=7.4.7",
+]
 
 [build-system]
 requires = ["pdm-backend"]

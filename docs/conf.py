@@ -33,7 +33,7 @@ import os
 import re, os.path
 
 def get_release():
-    regexp = re.compile(r"^__version__\W*=\W*'([\d.abrc]+)'")
+    regexp = re.compile(r"^__version__\W*=\W*[\"']([\d.abrc]+)[\"']")
     here = os.path.dirname(__file__)
     root = os.path.dirname(here)
     init_py = os.path.join(root, 'asyncodbc', '__init__.py')

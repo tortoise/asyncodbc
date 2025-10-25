@@ -70,3 +70,4 @@ sqlite.db
 # virtual envs
 venv*/
 virtualenv*/
+.venv*/
