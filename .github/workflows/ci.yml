@@ -8,17 +8,17 @@ on:
       - master
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       mssql:
-        image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2022-CU15-ubuntu-22.04
         ports:
           - 1433:1433
         env:
           ACCEPT_EULA: Y
           SA_PASSWORD: Abcd12345678
         options: >-
-          --health-cmd "/opt/mssql-tools/bin/sqlcmd -U sa -P Abcd12345678 -Q 'select 1' -b -o /dev/null"
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Abcd12345678 -Q 'SELECT 1' -b -o /dev/null"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -26,34 +26,31 @@ jobs:
       TEST_MSSQL_PASS: Abcd12345678
     strategy:
       matrix:
-        python-version: [ "3.8", "3.9", "3.10" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13", "3.14" ]
     steps:
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install and configure Poetry
-        run: |
-          pip install -U pip poetry
-          poetry config virtualenvs.create false
-      - name: Install requirements
-        run: make deps
+          allow-prereleases: true
       - name: Install ODBC driver
         run: |
-          sudo curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list -o /etc/apt/sources.list.d/mssql-release.list
+          curl -sSL -O https://packages.microsoft.com/config/ubuntu/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
           sudo apt-get update
-          ACCEPT_EULA=Y sudo apt-get install -y msodbcsql18
-      - name: Run ci
-        run: make ci
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          activate-environment: true
+      - name: Install requirements
+        run: make deps
+      - name: Check style
+        run: make check
+      - name: Run tests
+        run: make testall
       - name: Upload Coverage
-        run: coveralls --service=github
+        run: uvx coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
@@ -62,8 +59,7 @@ jobs:
   coveralls:
     name: Finish Coveralls
     needs: test
-    runs-on: ubuntu-latest
-    container: python:3-slim
+    runs-on: ubuntu-22.04
     steps:
       - name: Finished
         run: |

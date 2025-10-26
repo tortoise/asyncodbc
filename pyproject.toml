@@ -1,46 +1,47 @@
-[tool.poetry]
+[project]
 name = "asyncodbc"
-version = "0.1.1"
+dynamic = ["version"]
 description = "Forked from aioodbc and make improvement"
-authors = ["long2ice <long2ice@gmail.com>"]
+authors = [{name="long2ice", email="long2ice@gmail.com"}]
 license = "Apache-2.0"
 readme = "README.rst"
+keywords = ["sql", "async", "asyncio", "aio", "mssql", "odbc"]
+requires-python = ">=3.9"
+dependencies = ["pyodbc"]
+
+[project.urls]
 homepage = "https://github.com/tortoise/asyncodbc"
 repository = "https://github.com/tortoise/asyncodbc.git"
 documentation = "https://github.com/tortoise/asyncodbc"
-keywords = ["sql", "async", "asyncio", "aio", "mssql", "odbc"]
-packages = [
-    { include = "asyncodbc" }
+
+[dependency-groups]
+dev = [
+    "ruff >=0.14.1",
+    "bandit >=1.8.6",
+    "mypy >=1.18.2",
+    "twine >=6.2.0",
 ]
-include = ["LICENSE", "README.rst"]
-
-[tool.poetry.dependencies]
-python = "^3.7"
-pyodbc = "*"
-
-[tool.poetry.dev-dependencies]
-# Linter tools
-mypy = "*"
-flake8 = "*"
-flake8-comprehensions = "*"
-pyproject-flake8 = "*"
-darglint = "*"
-pylint = "*"
-pygments = "*"
-bandit = "*"
-black = "*"
-# Test tools
-coveralls = "*"
-pytest = "*"
-pytest-xdist = "*"
-pytest-cov = "*"
-pytest-asyncio = "*"
-# Pypi
-twine = "*"
+test = [
+    "pytest >=8.4.2",
+    "pytest-mock >=3.15.1",
+    "pytest-cov >=7.0.0",
+    "pytest-xdist >=3.8.0",
+    "pytest-asyncio >=1.2.0",
+]
+docs = [
+    "sphinx>=7.4.7",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+version = {source="file", path="asyncodbc/__init__.py"}
+
+[tool.pdm.build]
+excludes = ["./**/.git", "./**/.*_cache", "./**/*.pyc", "./**/*.swp"]
+include = ["LICENSE", "README.rst"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -49,6 +50,30 @@ asyncio_mode = "auto"
 ignore = "E501,W503,DAR101,DAR201,DAR402"
 max-line-length = 100
 docstring_style = "sphinx"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = [
+    "I",      # https://docs.astral.sh/ruff/rules/#isort-i
+    "FA",     # https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa
+    "UP",     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "RUF100", # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+]
+ignore = ["UP032"] # https://docs.astral.sh/ruff/rules/f-string/
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"docs/conf.py" = ["E401","F401","I001","UP009"]
+
+[tool.ruff.format]
+exclude = ["docs/conf.py"]
+
+[tool.bandit]
+exclude_dirs = [".venv", "examples", "tests", "conftest.py"]
 
 [tool.coverage.run]
 branch = true
