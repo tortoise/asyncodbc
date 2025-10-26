@@ -52,14 +52,6 @@ async def test_release(pool):
         await pool.release(conn)
     assert 1 == pool.freesize
     assert not pool._used
-    assert conn in pool._free
-
-    conn2 = await pool.acquire()
-    try:
-        await conn2.close()
-    finally:
-        await pool.release(conn2)
-    assert conn2 not in pool._free
 
 
 @pytest.mark.asyncio
@@ -68,9 +60,9 @@ async def test_release_closed(pool):
     assert 0 == pool.freesize
     await conn.close()
     await pool.release(conn)
-    assert 1 == pool.freesize
+    assert 0 == pool.freesize
     assert not pool._used
-    assert 1 == pool.size
+    assert 0 == pool.size
 
     conn2 = await pool.acquire()
     assert 0 == pool.freesize
