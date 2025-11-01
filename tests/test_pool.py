@@ -60,9 +60,9 @@ async def test_release_closed(pool):
     assert 0 == pool.freesize
     await conn.close()
     await pool.release(conn)
-    assert 1 == pool.freesize
+    assert 0 == pool.freesize
     assert not pool._used
-    assert 1 == pool.size
+    assert 0 == pool.size
 
     conn2 = await pool.acquire()
     assert 0 == pool.freesize
