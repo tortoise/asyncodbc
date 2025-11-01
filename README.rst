@@ -1,7 +1,7 @@
 asyncodbc
 =========
-.. image:: https://travis-ci.com/tortoise/asyncodbc.svg?branch=main
-    :target: https://travis-ci.com/tortoise/asyncodbc
+.. image:: https://github.com/tortoise/asyncodbc/actions/workflows/ci.yml/badge.svg?branch=main
+    :target: https://github.com/tortoise/asyncodbc/actions?query=workflow:ci
 .. image:: https://coveralls.io/repos/tortoise/asyncodbc/badge.svg?branch=main&service=github
     :target: https://coveralls.io/github/tortoise/asyncodbc?branch=main
 .. image:: https://img.shields.io/pypi/v/asyncodbc.svg
