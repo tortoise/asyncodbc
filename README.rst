@@ -134,21 +134,13 @@ then::
 Run tests
 ---------
 
-For testing purposes you need to install docker_ and the development
-requirements::
+For testing purposes you need to install the test group requirements::
 
-    $ pip install -r pyproject.toml --group test -e .
-
-In order to simplify development you should install the provided docker container.
-This way you don't need to install any databases or other system libraries, everything happens inside the container.
+    $ uv pip install -r pyproject.toml --group test -e .
 
 Then just execute::
 
-    $ make docker_build
-    $ make docker_test
-
-The test will automatically pull images and build containers with
-the required databases.
+    $ make test_mssql
 
 *NOTE:* Running tests requires Python 3.9 or higher.
 
