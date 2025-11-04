@@ -3,12 +3,19 @@ on:
   push:
     branches-ignore:
       - main
+    paths-ignore:
+      - "*.rst"
   pull_request:
-    branches-ignore:
+    branches:
       - main
+    paths-ignore:
+      - "*.rst"
+
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
   test:
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.base.repo.full_name == github.repository) }}
     runs-on: ubuntu-22.04
     services:
       mssql:
@@ -58,7 +65,6 @@ jobs:
           COVERALLS_PARALLEL: true
 
   coveralls:
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.base.repo.full_name == github.repository) }}
     name: Finish Coveralls
     needs: test
     runs-on: ubuntu-22.04
