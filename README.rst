@@ -40,9 +40,6 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
     import asyncodbc
 
 
-    loop = asyncio.get_event_loop()
-
-
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
         conn = await asyncodbc.connect(dsn=dsn, loop=loop)
@@ -56,7 +53,7 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
         await cur.close()
         await conn.close()
 
-    loop.run_until_complete(test_example())
+    asyncio.run(test_example())
 
 
 Connection Pool
@@ -67,9 +64,6 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
 
     import asyncio
     import asyncodbc
-
-
-    loop = asyncio.get_event_loop()
 
 
     async def test_pool():
@@ -86,7 +80,7 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
         pool.close()
         await pool.wait_closed()
 
-    loop.run_until_complete(test_pool())
+    asyncio.run(test_pool())
 
 
 Context Managers
@@ -100,9 +94,6 @@ protocol:
     import asyncodbc
 
 
-    loop = asyncio.get_event_loop()
-
-
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
 
@@ -114,7 +105,7 @@ protocol:
                     print(val)
                     print(val.age)
 
-    loop.run_until_complete(test_example())
+    asyncio.run(test_example())
 
 
 Installation
