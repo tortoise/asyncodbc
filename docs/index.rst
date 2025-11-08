@@ -39,7 +39,7 @@ Please feel free to file an issue on `bug tracker
 <https://github.com/tortoise/asyncodbc/issues>`_ if you have found a bug
 or have some suggestion for library improvement.
 
-The library uses `Travis <https://travis-ci.org/tortoise/asyncodbc>`_ for
+The library uses `Github Action <https://github.com/tortoise/asyncodbc/actions?query=workflow:ci>`_ for
 Continious Integration and `Coveralls
 <https://coveralls.io/r/tortoise/asyncodbc?branch=main>`_ for
 coverage reports.

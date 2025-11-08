@@ -1,7 +1,7 @@
 asyncodbc
 =========
-.. image:: https://travis-ci.com/tortoise/asyncodbc.svg?branch=main
-    :target: https://travis-ci.com/tortoise/asyncodbc
+.. image:: https://github.com/tortoise/asyncodbc/actions/workflows/ci.yml/badge.svg?branch=main
+    :target: https://github.com/tortoise/asyncodbc/actions?query=workflow:ci
 .. image:: https://coveralls.io/repos/tortoise/asyncodbc/badge.svg?branch=main&service=github
     :target: https://coveralls.io/github/tortoise/asyncodbc?branch=main
 .. image:: https://img.shields.io/pypi/v/asyncodbc.svg
@@ -40,9 +40,6 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
     import asyncodbc
 
 
-    loop = asyncio.get_event_loop()
-
-
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
         conn = await asyncodbc.connect(dsn=dsn, loop=loop)
@@ -56,7 +53,7 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
         await cur.close()
         await conn.close()
 
-    loop.run_until_complete(test_example())
+    asyncio.run(test_example())
 
 
 Connection Pool
@@ -67,9 +64,6 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
 
     import asyncio
     import asyncodbc
-
-
-    loop = asyncio.get_event_loop()
 
 
     async def test_pool():
@@ -86,7 +80,7 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
         pool.close()
         await pool.wait_closed()
 
-    loop.run_until_complete(test_pool())
+    asyncio.run(test_pool())
 
 
 Context Managers
@@ -100,9 +94,6 @@ protocol:
     import asyncodbc
 
 
-    loop = asyncio.get_event_loop()
-
-
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
 
@@ -114,7 +105,7 @@ protocol:
                     print(val)
                     print(val.age)
 
-    loop.run_until_complete(test_example())
+    asyncio.run(test_example())
 
 
 Installation
@@ -134,21 +125,13 @@ then::
 Run tests
 ---------
 
-For testing purposes you need to install docker_ and the development
-requirements::
+For testing purposes you need to install the test group requirements::
 
-    $ pip install -r pyproject.toml --group test -e .
-
-In order to simplify development you should install the provided docker container.
-This way you don't need to install any databases or other system libraries, everything happens inside the container.
+    $ uv pip install -r pyproject.toml --group test -e .
 
 Then just execute::
 
-    $ make docker_build
-    $ make docker_test
-
-The test will automatically pull images and build containers with
-the required databases.
+    $ make test_mssql
 
 *NOTE:* Running tests requires Python 3.9 or higher.
 

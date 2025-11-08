@@ -6,7 +6,7 @@ up:
 	@uv lock --upgrade
 
 deps:
-	@uv sync --inexact --all-extras --all-groups --no-group docs $(options)
+	@uv sync --all-extras --all-groups --no-group docs $(options)
 
 _style:
 	@ruff format $(checkfiles)

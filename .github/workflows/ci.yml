@@ -3,9 +3,19 @@ on:
   push:
     branches-ignore:
       - main
+    paths-ignore:
+      - "docs/**"
+      - "*.rst"
   pull_request:
-    branches-ignore:
-      - master
+    branches:
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "*.rst"
+
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
   test:
     if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.base.repo.full_name == github.repository) }}
@@ -47,9 +57,9 @@ jobs:
       - name: Install requirements
         run: make deps
       - name: Check style
-        run: make check
+        run: make _check
       - name: Run tests
-        run: make testall
+        run: make _testall
       - name: Upload Coverage
         run: uvx coveralls --service=github
         env:

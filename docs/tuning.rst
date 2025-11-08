@@ -15,7 +15,7 @@ Configuration Tuning
 
    TheadPoolExecutor
 
-       When using ``aoiodbc.create_pool`` it is considered a
+       When using ``asyncodbc.create_pool`` it is considered a
        good practice to use ``ThreadPoolExecutor`` from
        ``concurrent.futures`` to create worker threads that
        are dedicated for database work allowing default threads
