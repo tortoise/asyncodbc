@@ -11,7 +11,7 @@ asyncodbc
 with asyncio_. It relies on the awesome pyodbc_ library and preserves the same look and
 feel. *asyncodbc* was written using `async/await` syntax (PEP492_) and only support
 Python that is not end-of-life(EOL).  Internally *asyncodbc* employs threads to avoid
-blocking the event loop, threads_ are not that as bad as you think!. Other
+blocking the event loop, threads_ are not that as bad as you think! Other
 drivers like motor_ use the same approach.
 
 **asyncodbc** is fully compatible and tested with uvloop_. Take a look at the test
@@ -39,7 +39,6 @@ Properties are unchanged, so ``conn.prop`` is correct as well as
     import asyncio
     import asyncodbc
 
-
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
         conn = await asyncodbc.connect(dsn=dsn, loop=loop)
@@ -64,7 +63,6 @@ Connection pooling is ported from aiopg_ and relies on PEP492_ features:
 
     import asyncio
     import asyncodbc
-
 
     async def test_pool():
         dsn = 'Driver=SQLite;Database=sqlite.db'
@@ -92,7 +90,6 @@ protocol:
 
     import asyncio
     import asyncodbc
-
 
     async def test_example():
         dsn = 'Driver=SQLite;Database=sqlite.db'
