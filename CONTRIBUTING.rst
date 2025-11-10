@@ -138,7 +138,6 @@ We encourage documentation improvements.
 
 Please before making a Pull Request about documentation changes run::
 
-   $ pip install --group docs
    $ make docs
 
 Once it finishes it will output the index html page
