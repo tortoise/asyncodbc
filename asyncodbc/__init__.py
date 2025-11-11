@@ -5,7 +5,7 @@ from pyodbc import dataSources as _dataSources
 from .connection import Connection, connect
 from .pool import Pool, create_pool
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __all__ = ["connect", "Connection", "create_pool", "Pool", "data_sources"]
 
 

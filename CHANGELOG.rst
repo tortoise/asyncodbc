@@ -10,10 +10,11 @@ Changelog
 0.2
 ====
 
-0.2.0 (unreleased)
-------------------- 
+0.2.0
+-------------------
 Added
 ^^^^^
+- Add official Python 3.14 support
 - Run bandit check in ci
 
 Changed
