@@ -11,7 +11,7 @@ Changelog
 ====
 
 0.2.0 (unreleased)
-------------------- 
+-------------------
 Added
 ^^^^^
 - Run bandit check in ci

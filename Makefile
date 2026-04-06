@@ -16,7 +16,7 @@ style: deps _style
 _codeqc:
 	#mypy $(checkfiles)
 	bandit -c pyproject.toml -r $(checkfiles)
-	twine check dist/*
+	uvx twine check dist/*
 codeqc: build _codeqc
 
 _check: _build
@@ -51,4 +51,4 @@ _build:
 build: deps _build
 
 publish: deps build
-	twine upload dist/*
+	echo 'Use github action instead of `twine upload dist/*`'
