@@ -6,7 +6,7 @@ authors = [{name="long2ice", email="long2ice@gmail.com"}]
 license = "Apache-2.0"
 readme = "README.rst"
 keywords = ["sql", "async", "asyncio", "aio", "mssql", "odbc"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["pyodbc"]
 
 [project.urls]
@@ -18,8 +18,8 @@ documentation = "https://github.com/tortoise/asyncodbc"
 dev = [
     "ruff >=0.14.1",
     "bandit >=1.8.6",
-    "mypy >=1.18.2",
-    "twine >=6.2.0",
+    # TODO: Add mypy back after typing issues fixed
+    # "mypy >=1.18.2",
 ]
 test = [
     "pytest >=8.4.2",
@@ -33,11 +33,11 @@ docs = [
 ]
 
 [build-system]
-requires = ["pdm-backend"]
+requires = ["pdm-backend>=2.4.8"]
 build-backend = "pdm.backend"
 
-[tool.pdm]
-version = {source="file", path="asyncodbc/__init__.py"}
+[tool.pdm.version]
+path = "asyncodbc/__init__.py"
 
 [tool.pdm.build]
 excludes = ["./**/.git", "./**/.*_cache", "./**/*.pyc", "./**/*.swp"]

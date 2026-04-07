@@ -278,7 +278,7 @@ class Connection:
             self._conn.close()
             self._conn = None
 
-            warnings.warn("Unclosed connection {!r}".format(self), ResourceWarning)
+            warnings.warn(f"Unclosed connection {self!r}", ResourceWarning)
 
             context = {"connection": self, "message": "Unclosed connection"}
             if self._source_traceback is not None:
